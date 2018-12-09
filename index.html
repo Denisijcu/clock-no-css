@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Promodoro Clock</title>
+</head>
+<body>
+    <div class="container">
+           <h1>Promodoro Clock</h1>
+        <div class="clock">
+             
+             <p id="break-label">Break Length</p>
+             <p id="session-label">Session Length</p>
+             <p id="break-decrement"> break down</p>
+             <p id="session-decrement">session-down</p>
+             <p id="break-increment"> break up</p>
+             <p id="session-increment">session-up</p>
+             <p id = "break-length"> 5 </p>
+             <p id= "session-length">25</p>
+             <h5 id = "timer-label">Session</h5>
+             
+             <p id="time-left">25:00</p>
+           
+             <p id="start_stop">Start/Stop</p>
+        
+             <p id="reset">Reset</p>
+
+             <audio controls id="beep" style="display: none;">
+                    <source src="http://soundbible.com/grab.php?id=2061&type=mp3" type="audio/mp3">
+                 
+                  Your browser does not support the audio element.
+             </audio>
+
+        </div>
+    </div>
+    <script>
+
+
+
+    
+    let timeleft = document.querySelector('#time-left');
+    let breaklength = document.querySelector("#break-length");
+    let sessionlength = document.querySelector("#session-length");
+    let reset = document.querySelector('#reset');
+    let breakdecrement = document.querySelector('#break-decrement');
+    let breakincrement = document.querySelector('#break-increment');
+    let sessiondecrement = document.querySelector('#session-decrement');
+    let sessionincrement = document.querySelector('#session-increment');
+    let timerlabel = document.querySelector("#timer-label");
+  
+    let starStop = document.querySelector('#start_stop');
+
+    let beep = document.querySelector('#beep');
+    
+
+    reset.addEventListener('click',()=>{
+      beep.play();
+    });
+    
+
+    let v = 0;
+
+    let stop = false;
+    let timer;
+    let seg;
+
+     starStop.addEventListener('click', ()=>{
+        let s = parseInt(sessionlength.textContent);
+        let m = parseInt(breaklength.textContent);
+        timeleft.textContent = `${m}:${s}`;
+        if (stop===true){clearInterval(timer); stop=false; return;}
+        if (stop===false){
+            seg = s;
+            timer = setInterval(()=>{
+           //  console.log('m;',m, 's:',s);
+            if (m<1 && s<2 ) {
+                s=0;
+                timeleft.textContent = `00:00`;   
+                timerlabel.textContent = 'Break Has Begun';
+                breaklength.textContent = '5';
+                sessionlength.textContent = '15';
+                clearInterval(timer);
+
+                setTimeout(() => {
+                    beep.play();
+                }, 1000);
+              
+                
+                return;}
+            seg-=1;
+            if (seg>0){
+                s-=1;
+            }else if(seg<0){
+                m-=1;
+                s=60;
+                seg=60;
+            }
+           
+            timeleft.textContent = `${m}:${s}`;    
+          
+            stop = true;
+        },10);
+        }
+       
+     });
+
+     
+
+     sessionincrement.addEventListener('click',()=>{
+         
+        v = parseInt(sessionlength.textContent);
+        v+=1;
+        if (v>60){
+            let s = 0;
+            let m = 0;
+            timeleft.textContent=`${m}:${s}`;
+            return;}
+        sessionlength.textContent = v;
+    });
+
+    sessiondecrement.addEventListener('click',()=>{
+        timerlabel.textContent = 'Session Has Begun';
+        v = parseInt(sessionlength.textContent);
+        v-=1;
+        if (v<0){
+            let s = parseInt(sessionlength.textContent);
+            let m = parseInt(breaklength.textContent);
+            timeleft.textContent=`${m}:${s}`;
+            return;
+            }
+        sessionlength.textContent = v;
+    });
+
+    breakdecrement.addEventListener('click',()=>{
+        v = parseInt(breaklength.textContent);
+        v-=1;
+        if (v<0){
+            let s = parseInt(sessionlength.textContent);
+            let m = parseInt(breaklength.textContent);
+            timeleft.textContent=`${m}:${s}`;
+            return;}
+        breaklength.textContent = v;
+    });
+    breakincrement.addEventListener('click',()=>{
+        timerlabel.textContent = 'Break Has Begun';
+        v = parseInt(breaklength.textContent);
+       
+        v+=1;
+        if (v>60){
+            let s = 0;
+            let m = 0;
+            timeleft.textContent=`${m}:${s}`;
+            return;}
+        breaklength.textContent = v;
+    });
+    reset.addEventListener('click', ()=>{
+        breaklength.textContent = '5';
+        sessionlength.textContent = '25';
+        timeleft.textContent = '25:00';
+    });
+    </script>
+</body>
+</html>
